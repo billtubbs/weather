@@ -2,32 +2,23 @@
 import requests
 import sys
 
-"""
-Python module to fetch current weather information from OpenWeatherMap's
-API.
-
-To use, set api_key to your OpenWeatherMap API key.
-
-API Reference:
-http://openweathermap.org/current
-"""
-
-
-api_key = "{Insert your API key here}"
+api_key = "d2ec26ecb98b5ade6acb6b98e55e613b"
 url_format_string = 'http://api.openweathermap.org/data/2.5/weather?id={}&APPID={}'
 
 
 def get_current_weather(city_id=6173331):
-    """get_current_weather(city_id=6173331) -> status_code, json
 
-    Returns a status code and json text string containing information
-    on the current weather conditions at the specified city id location."""
-    
     url = url_format_string.format(city_id, api_key)
 
-    r = requests.get(url, auth=('user', 'pass'))
+    try:
+        r = requests.get(url, auth=('user', 'pass'))
+    except requests.exceptions.ConnectionError:
+        return "CONNECT ERROR", None
 
-    return r.status_code, r.json()
+    if r.status_code != 200:
+        return "ERROR {}".format(r.status_code), None
+    else:
+        return None, r.json()
 
 
 if __name__ == "__main__":
